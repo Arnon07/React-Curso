@@ -13,7 +13,7 @@ class App extends Component{
   pegaNome(texto){
     if(texto.length > 0){
       this.setState({
-        nome: 'Bem vindo ' + texto
+        nome: 'Bem vindo: ' + texto
       })
     } else {
       this.setState({
