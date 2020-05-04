@@ -13,7 +13,7 @@ class App extends Component{
 
   entrar(){
     if(this.state.input === ''){
-      alert('Digite seu nome!')
+      alert('Digite seu nome')
       return
     }
     this.setState({
