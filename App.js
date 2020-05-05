@@ -1,91 +1,132 @@
-import React, { Component} from 'react';
-import { 
-  View, 
-  Text, 
-  Image,
-  StyleSheet, TextInput, TouchableOpacity
-} 
-from 'react-native';
+import React, { Component } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Image
+  } from 'react-native';
 
 class App extends Component{
-
   constructor(props){
-    super(props)
-    this.state = {
-        textoFrase: 'A persistência é o caminho do êxito.',
-        img: require('./src/biscoito.png'),
-    }
-    this.quebraBiscoito = this.quebraBiscoito.bind(this)
-    this.frases = [
-      'A persistência é o caminho do êxito.',
-      'O que não provoca minha morte faz com que eu fique mais forte.',
-      'No meio da dificuldade encontra-se a oportunidade.',
-      'O sucesso é ir de fracasso em fracasso sem perder entusiasmo.',
-      'Um bom começo é a metade.',
-      'Faço da dificuldade a minha motivação.',
-      'Motivação é a impulsão para realizações de sonhos'
-    ]
+        super(props)
+        this.state ={
+          numero: 0,
+          botao: 'iniciar',
+          ultimo: null
+        }
+        this.timer = null
+        this.iniciar = this.iniciar.bind(this)
+        this.parar = this.parar.bind(this)
   }
-  quebraBiscoito(){
-    let numAleatorio = Math.floor(Math.random() * this.frases.length)
+
+  iniciar(){
+    if(this.timer != null){
+      clearInterval(this.timer)
+      this.timer = null
+      this.setState({
+        botao: 'Continuar'
+      })
+    }else{
+      this.timer = setInterval(() => {
+        this.setState({numero: this.state.numero + 0.1})
+      }, 100)
+      this.setState({
+        botao: 'Parar'
+      })
+    }
+   
+  }
+
+  parar(){
+    if(this.timer != null){
+      clearInterval(this.timer)
+      this.timer = null
+    }
     this.setState({
-      textoFrase: ' " ' +this.frases[numAleatorio]+ ' "',
-      img: require('./src/biscoitoAberto.png')
+      ultimo: this.state.numero,
+      numero: 0,
+      botao: 'Iniciar'
     })
   }
 
-    render(){
-      return(
-        <View style={style.container} >
-          <Image style={style.img}
-              source={this.state.img}
-           />
-           <Text style={style.textoFrase}>{this.state.textoFrase}</Text>
+  render(){
+    return(
+      <View style={styles.container} > 
+      
+      <Image 
+        source={require('./src/cronometro.png')}
+        style={styles.cronometro}
+      />
 
-           <TouchableOpacity style={style.botao} onPress={this.quebraBiscoito}>
-             <View style={style.btnArea}>
-               <Text style={style.btnTexto}>Quebrar Biscoito</Text>
-             </View>
-           </TouchableOpacity>
+    <Text style={styles.timer}>{
+      this.state.numero.toFixed(1)
+    }</Text>
+     
+      <View style={styles.btnArea}>
+
+            <TouchableOpacity style={styles.btn} onPress={this.iniciar}>
+                   <Text style={styles.btnTexto}>{this.state.botao}</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.btn} onPress={this.parar}>
+                  <Text style={styles.btnTexto}>Zerar</Text>
+            </TouchableOpacity>
           
-          </View>
-      )
-    }
+      </View>
+
+              <View style={styles.ultima}>
+                  <Text style={styles.tempo}>{
+                  this.state.ultimo > 0 ? 'Ultimo tempo: ' + this.state.ultimo.toFixed(2) + 's' : ' '
+                  }</Text>
+            </View>
+
+      </View>    
+    );
+  }
+
 }
-const style = StyleSheet.create({
+
+const styles = StyleSheet.create({
   container:{
     flex:1,
     alignItems: 'center',
-    justifyContent: 'center'
-  },
-  img:{
-    width: 250,
-    height: 250
-  },
-  textoFrase:{
-    fontSize: 20,
-    color: '#dd7b22',
-    margin: 30,
-    fontStyle: 'italic',
-    textAlign: 'center'
-  },
-  botao:{
-    width: 230,
-    height: 50,
-    borderWidth: 2,
-    borderColor: '#dd7b22',
-    borderRadius: 25
-  },
-  btnArea:{
-    flex:1,
-    flexDirection: 'row',
     justifyContent: 'center',
-    alignItems: 'center'
+    backgroundColor:'#00aeef'
   },
-  btnTexto:{
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#dd7b22'
-  }
-})
+  timer:{
+    marginTop: -160,
+    color: '#FFF',
+    fontSize: 65,
+    fontWeight: 'bold'
+    },
+    btnArea:{
+      flexDirection: 'row',
+      marginTop: 70,
+      height: 40
+    },
+    btn:{
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: '#FFF',
+      height: 40,
+      margin: 17,
+      borderRadius: 9
+    },
+    btnTexto:{
+      fontSize: 20,
+      fontWeight: 'bold',
+      color: '#00aeef'
+    },
+    ultima:{
+      marginTop:40
+    },
+    tempo:{
+      fontSize: 25,
+      fontStyle: 'italic',
+      color: '#FFF'
+    }
+});
+
 export default App;
