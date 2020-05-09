@@ -3,130 +3,64 @@ import {
   View,
   Text,
   StyleSheet,
-  TouchableOpacity,
-  Image
+  FlatList,
+  Picker
   } from 'react-native';
 
 class App extends Component{
   constructor(props){
-        super(props)
-        this.state ={
-          numero: 0,
-          botao: 'iniciar',
-          ultimo: null
-        }
-        this.timer = null
-        this.iniciar = this.iniciar.bind(this)
-        this.parar = this.parar.bind(this)
-  }
-
-  iniciar(){
-    if(this.timer != null){
-      clearInterval(this.timer)
-      this.timer = null
-      this.setState({
-        botao: 'Continuar'
-      })
-    }else{
-      this.timer = setInterval(() => {
-        this.setState({numero: this.state.numero + 0.1})
-      }, 100)
-      this.setState({
-        botao: 'Parar'
-      })
+    super(props)
+    this.state = {
+      pizza:0,
+      pizzas: [
+        {key: 1, nome: 'Strogonoff', valor: 35.90},
+        {key: 1, nome: 'Brigadeiro', valor: 20.90},
+        {key: 1, nome: 'Calabresa', valor: 18.00},
+      ]
     }
-   
   }
-
-  parar(){
-    if(this.timer != null){
-      clearInterval(this.timer)
-      this.timer = null
-    }
-    this.setState({
-      ultimo: this.state.numero,
-      numero: 0,
-      botao: 'Iniciar'
-    })
-  }
-
   render(){
+    let pizzaItem = this.state.pizzas.map((v, k) => {
+     return <Picker.Item key ={k} value={k} label={v.nome}/>
+    })
     return(
-      <View style={styles.container} > 
-      
-      <Image 
-        source={require('./src/cronometro.png')}
-        style={styles.cronometro}
-      />
+      <View style={styles.container}>
+          <Text style={styles.logo}>Menu Pizza</Text>
 
-    <Text style={styles.timer}>{
-      this.state.numero.toFixed(1)
-    }</Text>
-     
-      <View style={styles.btnArea}>
+          <Picker
+          selectedValue={this.state.pizza}
+          onValueChange={(itemValue, itemIndex) => this.setState({pizza: itemValue})}
+          >
+            {pizzaItem}
+          </Picker>
 
-            <TouchableOpacity style={styles.btn} onPress={this.iniciar}>
-                   <Text style={styles.btnTexto}>{this.state.botao}</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity style={styles.btn} onPress={this.parar}>
-                  <Text style={styles.btnTexto}>Zerar</Text>
-            </TouchableOpacity>
-          
+          <Text style={styles.pizzas}>
+            você escolheu: {this.state.pizzas[this.state.pizza].nome}
+          </Text>
+          <Text style={styles.pizzas}>
+            R$: {this.state.pizzas[this.state.pizza].valor.toFixed(2)}
+          </Text>
+            
       </View>
-
-              <View style={styles.ultima}>
-                  <Text style={styles.tempo}>{
-                  this.state.ultimo > 0 ? 'Ultimo tempo: ' + this.state.ultimo.toFixed(2) + 's' : ' '
-                  }</Text>
-            </View>
-
-      </View>    
-    );
+    )
   }
-
 }
 
 const styles = StyleSheet.create({
   container:{
     flex:1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor:'#00aeef'
+    marginTop: 15
   },
-  timer:{
-    marginTop: -160,
-    color: '#FFF',
-    fontSize: 65,
-    fontWeight: 'bold'
-    },
-    btnArea:{
-      flexDirection: 'row',
-      marginTop: 70,
-      height: 40
-    },
-    btn:{
-      flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
-      backgroundColor: '#FFF',
-      height: 40,
-      margin: 17,
-      borderRadius: 9
-    },
-    btnTexto:{
-      fontSize: 20,
-      fontWeight: 'bold',
-      color: '#00aeef'
-    },
-    ultima:{
-      marginTop:40
-    },
-    tempo:{
-      fontSize: 25,
-      fontStyle: 'italic',
-      color: '#FFF'
-    }
+  logo:{
+    textAlign: 'center',
+    fontSize: 25
+  },
+  pizzas:{
+    marginTop:15,
+    backgroundColor: '#ddd',
+    fontSize: 25,
+    textAlign: 'center'
+  }
 });
 
 export default App;
